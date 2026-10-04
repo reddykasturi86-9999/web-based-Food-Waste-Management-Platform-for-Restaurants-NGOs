@@ -1,0 +1,1915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FoodBridge - Food Waste Management</title>
+
+<style>
+:root{
+  --bg:#f3f7f4;
+  --card:#fff;
+  --soft:#eaf6ed;
+  --text:#17231b;
+  --muted:#6b7280;
+  --border:#d8e5dc;
+  --primary:#16803c;
+  --primary-dark:#0d5c2a;
+  --danger:#dc2626;
+  --warning:#d97706;
+  --blue:#2563eb;
+  --shadow:0 8px 25px rgba(0,0,0,.08);
+}
+
+html.dark{
+  --bg:#0d1811;
+  --card:#17251c;
+  --soft:#203428;
+  --text:#e8f5eb;
+  --muted:#aab9ae;
+  --border:#304638;
+  --primary:#5bd27e;
+  --primary-dark:#96efac;
+  --danger:#f87171;
+  --warning:#fbbf24;
+  --blue:#60a5fa;
+  --shadow:0 8px 25px rgba(0,0,0,.3);
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+}
+
+button,input,select,textarea{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+.hidden{
+  display:none!important;
+}
+
+/* Login */
+
+#loginScreen{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:
+  linear-gradient(rgba(13,92,42,.86),rgba(22,128,60,.86)),
+  url("https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=1400&q=80")
+  center/cover;
+}
+
+.login-card{
+  width:min(430px,100%);
+  background:var(--card);
+  padding:30px;
+  border-radius:18px;
+  box-shadow:var(--shadow);
+}
+
+.login-card h1{
+  color:var(--primary);
+  margin-bottom:8px;
+}
+
+.login-card p{
+  color:var(--muted);
+  line-height:1.5;
+  margin-bottom:20px;
+}
+
+.demo-note{
+  background:var(--soft);
+  color:var(--muted);
+  padding:12px;
+  border-radius:8px;
+  margin-top:16px;
+  font-size:13px;
+  line-height:1.5;
+}
+
+/* Header */
+
+header{
+  height:68px;
+  background:var(--card);
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 24px;
+  position:sticky;
+  top:0;
+  z-index:20;
+  box-shadow:var(--shadow);
+}
+
+.brand{
+  color:var(--primary);
+  font-size:21px;
+  font-weight:bold;
+}
+
+.header-actions{
+  display:flex;
+  align-items:center;
+  gap:9px;
+}
+
+.user-label{
+  color:var(--muted);
+  font-size:14px;
+}
+
+nav{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  padding:13px 24px;
+  background:var(--card);
+  border-bottom:1px solid var(--border);
+}
+
+nav button,
+.btn-secondary,
+.theme-btn{
+  background:transparent;
+  color:var(--text);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:9px 13px;
+}
+
+nav button.active,
+nav button:hover,
+.btn,
+.btn-primary{
+  background:var(--primary);
+  border-color:var(--primary);
+  color:white;
+}
+
+nav button.active{
+  font-weight:bold;
+}
+
+/* Layout */
+
+main{
+  max-width:1250px;
+  margin:auto;
+  padding:24px;
+}
+
+.section{
+  display:none;
+}
+
+.section.active{
+  display:block;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:15px;
+  padding:20px;
+  margin-bottom:20px;
+  box-shadow:var(--shadow);
+}
+
+.card h2,
+.card h3{
+  color:var(--primary);
+  margin-bottom:12px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+  margin-bottom:22px;
+}
+
+.two-column{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+}
+
+.stat{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:15px;
+  padding:20px;
+  box-shadow:var(--shadow);
+}
+
+.stat small{
+  color:var(--muted);
+}
+
+.stat strong{
+  display:block;
+  font-size:30px;
+  color:var(--primary);
+  margin-top:8px;
+}
+
+/* Forms */
+
+.form-group{
+  margin-bottom:15px;
+}
+
+label{
+  display:block;
+  color:var(--muted);
+  font-size:14px;
+  margin-bottom:6px;
+}
+
+input,select,textarea{
+  width:100%;
+  padding:11px 12px;
+  color:var(--text);
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:8px;
+  outline:none;
+}
+
+textarea{
+  min-height:100px;
+  resize:vertical;
+}
+
+.form-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+
+/* Buttons */
+
+.btn{
+  border:0;
+  border-radius:8px;
+  padding:10px 15px;
+  font-weight:bold;
+}
+
+.btn:hover{
+  background:var(--primary-dark);
+}
+
+.btn-danger{
+  background:var(--danger);
+  border:0;
+  color:white;
+  border-radius:8px;
+  padding:10px 14px;
+}
+
+.btn-warning{
+  background:var(--warning);
+  border:0;
+  color:white;
+  border-radius:8px;
+  padding:10px 14px;
+}
+
+.btn-blue{
+  background:var(--blue);
+  border:0;
+  color:white;
+  border-radius:8px;
+  padding:10px 14px;
+}
+
+/* Donations */
+
+.donation-list{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+
+.donation-card{
+  background:var(--soft);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:16px;
+}
+
+.donation-card h3{
+  color:var(--primary);
+  margin-bottom:8px;
+}
+
+.donation-card p{
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.5;
+  margin:6px 0;
+}
+
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:14px;
+}
+
+.status{
+  display:inline-block;
+  border-radius:20px;
+  padding:5px 9px;
+  font-size:11px;
+  font-weight:bold;
+  text-transform:uppercase;
+}
+
+.available{
+  background:#d1fae5;
+  color:#065f46;
+}
+
+.claimed{
+  background:#dbeafe;
+  color:#1e40af;
+}
+
+.picked{
+  background:#fef3c7;
+  color:#92400e;
+}
+
+.delivered{
+  background:#dcfce7;
+  color:#166534;
+}
+
+.cancelled{
+  background:#fee2e2;
+  color:#991b1b;
+}
+
+html.dark .available{
+  background:#064e3b;
+  color:#a7f3d0;
+}
+
+html.dark .claimed{
+  background:#1e3a8a;
+  color:#bfdbfe;
+}
+
+html.dark .picked{
+  background:#78350f;
+  color:#fde68a;
+}
+
+html.dark .delivered{
+  background:#14532d;
+  color:#bbf7d0;
+}
+
+html.dark .cancelled{
+  background:#7f1d1d;
+  color:#fecaca;
+}
+
+/* Tables and messages */
+
+.table-wrap{
+  overflow:auto;
+}
+
+table{
+  width:100%;
+  min-width:700px;
+  border-collapse:collapse;
+}
+
+th,td{
+  padding:12px 10px;
+  border-bottom:1px solid var(--border);
+  text-align:left;
+  font-size:14px;
+}
+
+th{
+  color:var(--primary);
+}
+
+.notice{
+  background:var(--soft);
+  border-left:4px solid var(--primary);
+  padding:12px;
+  border-radius:8px;
+  margin-bottom:10px;
+  line-height:1.5;
+  font-size:14px;
+}
+
+.empty{
+  color:var(--muted);
+  padding:15px 0;
+}
+
+#toastContainer{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  z-index:100;
+}
+
+.toast{
+  background:var(--card);
+  color:var(--text);
+  border:1px solid var(--border);
+  border-left:5px solid var(--primary);
+  border-radius:8px;
+  box-shadow:var(--shadow);
+  padding:13px 16px;
+  margin-top:10px;
+  min-width:250px;
+}
+
+footer{
+  text-align:center;
+  color:var(--muted);
+  font-size:13px;
+  padding:20px;
+}
+
+@media(max-width:950px){
+  .grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .donation-list{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
+@media(max-width:650px){
+  header{
+    height:auto;
+    padding:14px;
+    gap:10px;
+    align-items:flex-start;
+  }
+
+  .header-actions{
+    flex-wrap:wrap;
+    justify-content:flex-end;
+  }
+
+  .user-label{
+    display:none;
+  }
+
+  nav{
+    padding:12px;
+  }
+
+  main{
+    padding:14px;
+  }
+
+  .grid,
+  .two-column,
+  .form-row,
+  .donation-list{
+    grid-template-columns:1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<section id="loginScreen">
+  <div class="login-card">
+    <h1>🍱 FoodBridge</h1>
+
+    <p>
+      A food waste management platform connecting restaurants,
+      NGOs, and volunteers.
+    </p>
+
+    <div class="form-group">
+      <label>Name or organization</label>
+      <input id="loginName" placeholder="Example: Green Leaf Restaurant">
+    </div>
+
+    <div class="form-group">
+      <label>Email</label>
+      <input id="loginEmail" type="email" placeholder="example@email.com">
+    </div>
+
+    <div class="form-group">
+      <label>Password</label>
+      <div style="display:flex;gap:6px;">
+        <input id="loginPassword" type="password" placeholder="Minimum 6 characters">
+        <button class="btn-secondary" id="showPasswordBtn">Show</button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Role</label>
+      <select id="loginRole">
+        <option value="restaurant">Restaurant / Donor</option>
+        <option value="ngo">NGO / Receiver</option>
+        <option value="admin">Administrator</option>
+      </select>
+    </div>
+
+    <label style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+      <input id="rememberMe" type="checkbox" style="width:auto;">
+      Remember me
+    </label>
+
+    <div style="display:flex;gap:8px;">
+      <button class="btn" id="loginBtn">Login</button>
+      <button class="btn-secondary" id="registerBtn">Register</button>
+    </div>
+
+    <p id="loginError" style="color:var(--danger);margin-top:12px;"></p>
+
+    <div class="demo-note">
+      Educational demo: accounts and data are stored in this browser only.
+    </div>
+  </div>
+</section>
+
+<!-- APPLICATION -->
+<div id="app" class="hidden">
+
+  <header>
+    <div class="brand">🍱 FoodBridge</div>
+
+    <div class="header-actions">
+      <button class="theme-btn" id="themeBtn">🌙</button>
+      <span class="user-label" id="userLabel"></span>
+      <button class="btn-secondary" id="logoutBtn">Logout</button>
+    </div>
+  </header>
+
+  <nav id="navigation"></nav>
+
+  <main>
+
+    <!-- DASHBOARD -->
+    <section id="dashboard" class="section active">
+      <div class="card">
+        <h2 id="welcomeTitle">Dashboard</h2>
+        <p id="welcomeMessage" style="color:var(--muted);"></p>
+      </div>
+
+      <div class="grid">
+        <div class="stat">
+          <small>Total donations</small>
+          <strong id="statDonations">0</strong>
+        </div>
+
+        <div class="stat">
+          <small>Total meals</small>
+          <strong id="statMeals">0</strong>
+        </div>
+
+        <div class="stat">
+          <small>Available donations</small>
+          <strong id="statAvailable">0</strong>
+        </div>
+
+        <div class="stat">
+          <small>Completed deliveries</small>
+          <strong id="statCompleted">0</strong>
+        </div>
+      </div>
+
+      <div class="two-column">
+        <div class="card">
+          <h3>Recent Activity</h3>
+          <div id="recentActivity"></div>
+        </div>
+
+        <div class="card">
+          <h3>Notifications</h3>
+          <div id="notifications"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CREATE DONATION -->
+    <section id="createDonation" class="section">
+      <div class="card">
+        <h2>Post Surplus Food</h2>
+
+        <div class="form-group">
+          <label>Food name</label>
+          <input id="foodName" placeholder="Example: Vegetable rice meals">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Category</label>
+            <select id="foodCategory">
+              <option>Cooked meals</option>
+              <option>Bakery items</option>
+              <option>Fruits and vegetables</option>
+              <option>Packaged food</option>
+              <option>Dairy products</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Quantity in meals</label>
+            <input id="foodQuantity" type="number" min="1" placeholder="30">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Pickup deadline</label>
+            <input id="expiryTime" type="datetime-local">
+          </div>
+
+          <div class="form-group">
+            <label>Pickup address</label>
+            <input id="pickupAddress" placeholder="Restaurant address">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Food and safety notes</label>
+          <textarea id="foodNotes"
+            placeholder="Ingredients, allergens, packaging, storage details..."></textarea>
+        </div>
+
+        <button class="btn" id="postDonationBtn">Publish Donation</button>
+      </div>
+    </section>
+
+    <!-- AVAILABLE FOOD -->
+    <section id="availableDonations" class="section">
+      <div class="card">
+        <h2>Available Food Donations</h2>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Search</label>
+            <input id="searchDonation"
+              placeholder="Search food, donor, or address">
+          </div>
+
+          <div class="form-group">
+            <label>Category</label>
+            <select id="categoryFilter">
+              <option value="all">All categories</option>
+              <option>Cooked meals</option>
+              <option>Bakery items</option>
+              <option>Fruits and vegetables</option>
+              <option>Packaged food</option>
+              <option>Dairy products</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div id="donationList" class="donation-list"></div>
+    </section>
+
+    <!-- MY DONATIONS -->
+    <section id="myDonations" class="section">
+      <div class="card">
+        <h2 id="myDonationTitle">My Donations</h2>
+        <div id="myDonationList"></div>
+      </div>
+    </section>
+
+    <!-- PICKUPS -->
+    <section id="pickups" class="section">
+      <div class="card">
+        <h2>Pickup Tracking</h2>
+        <div id="pickupList"></div>
+      </div>
+    </section>
+
+    <!-- FAVORITES -->
+    <section id="favorites" class="section">
+      <div class="card">
+        <h2>Favorite Donations</h2>
+        <div id="favoriteDonationList"></div>
+      </div>
+    </section>
+
+    <!-- ANALYTICS -->
+    <section id="analytics" class="section">
+      <div class="card">
+        <h2>Impact Analytics</h2>
+
+        <div class="grid">
+          <div class="stat">
+            <small>Meals delivered</small>
+            <strong id="impactMeals">0</strong>
+          </div>
+
+          <div class="stat">
+            <small>Estimated food weight</small>
+            <strong id="impactWeight">0 kg</strong>
+          </div>
+
+          <div class="stat">
+            <small>Successful deliveries</small>
+            <strong id="impactDeliveries">0</strong>
+          </div>
+
+          <div class="stat">
+            <small>Active partners</small>
+            <strong id="impactPartners">0</strong>
+          </div>
+        </div>
+
+        <div class="notice">
+          Estimated weight uses 0.4 kg per meal for this demonstration.
+        </div>
+      </div>
+    </section>
+
+    <!-- REPORTS -->
+    <section id="reports" class="section">
+      <div class="card">
+        <h2>Reports</h2>
+
+        <button class="btn" id="exportCsvBtn">
+          Export CSV
+        </button>
+
+        <button class="btn-secondary" id="refreshDataBtn">
+          Refresh Data
+        </button>
+
+        <div class="table-wrap" style="margin-top:20px;">
+          <table>
+            <thead>
+              <tr>
+                <th>Food</th>
+                <th>Category</th>
+                <th>Quantity</th>
+                <th>Status</th>
+                <th>Donor</th>
+                <th>Claimed By</th>
+              </tr>
+            </thead>
+            <tbody id="reportTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ADMIN -->
+    <section id="adminPanel" class="section">
+      <div class="card">
+        <h2>Administrator Panel</h2>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Food</th>
+                <th>Donor</th>
+                <th>Quantity</th>
+                <th>Status</th>
+                <th>Claimed By</th>
+                <th>Change Status</th>
+              </tr>
+            </thead>
+            <tbody id="adminTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROFILE -->
+    <section id="profile" class="section">
+      <div class="card">
+        <h2>Profile</h2>
+
+        <div class="form-group">
+          <label>Name</label>
+          <input id="profileName">
+        </div>
+
+        <div class="form-group">
+          <label>Email</label>
+          <input id="profileEmail">
+        </div>
+
+        <div class="form-group">
+          <label>Role</label>
+          <input id="profileRole" disabled>
+        </div>
+
+        <button class="btn" id="saveProfileBtn">Save Profile</button>
+      </div>
+
+      <div class="card">
+        <h3>Data Management</h3>
+        <p style="color:var(--muted);margin-bottom:12px;">
+          Delete all donation and activity data stored in this browser.
+        </p>
+
+        <button class="btn-danger" id="clearDataBtn">
+          Clear Platform Data
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    FoodBridge educational project — frontend cloud platform prototype.
+  </footer>
+</div>
+
+<div id="toastContainer"></div>
+
+<script>
+/* ============================
+   STORAGE
+============================ */
+
+const KEYS = {
+  user: "foodbridge_user",
+  users: "foodbridge_users",
+  donations: "foodbridge_donations",
+  activities: "foodbridge_activities",
+  theme: "foodbridge_theme"
+};
+
+let currentUser = null;
+
+function makeId(){
+  return Date.now().toString() +
+    Math.random().toString(16).slice(2);
+}
+
+function getUsers(){
+  return JSON.parse(localStorage.getItem(KEYS.users) || "[]");
+}
+
+function saveUsers(users){
+  localStorage.setItem(KEYS.users, JSON.stringify(users));
+}
+
+function getDonations(){
+  return JSON.parse(localStorage.getItem(KEYS.donations) || "[]");
+}
+
+function saveDonations(data){
+  localStorage.setItem(KEYS.donations, JSON.stringify(data));
+}
+
+function getActivities(){
+  return JSON.parse(localStorage.getItem(KEYS.activities) || "[]");
+}
+
+function saveActivities(data){
+  localStorage.setItem(KEYS.activities, JSON.stringify(data));
+}
+
+function escapeHTML(value){
+  return String(value || "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function showToast(message){
+  const container = document.getElementById("toastContainer");
+  const toast = document.createElement("div");
+
+  toast.className = "toast";
+  toast.textContent = message;
+  container.appendChild(toast);
+
+  setTimeout(() => toast.remove(), 3500);
+}
+
+function addActivity(message){
+  const activities = getActivities();
+
+  activities.unshift({
+    id:makeId(),
+    message,
+    time:new Date().toISOString()
+  });
+
+  saveActivities(activities.slice(0,100));
+}
+
+/* ============================
+   AUTHENTICATION
+============================ */
+
+function roleName(role){
+  if(role === "restaurant") return "Restaurant / Donor";
+  if(role === "ngo") return "NGO / Receiver";
+  return "Administrator";
+}
+
+function saveCurrentUser(user, remember){
+  const storage = remember ? localStorage : sessionStorage;
+  storage.setItem(KEYS.user, JSON.stringify(user));
+}
+
+function getStoredUser(){
+  return localStorage.getItem(KEYS.user) ||
+         sessionStorage.getItem(KEYS.user);
+}
+
+document.getElementById("registerBtn").addEventListener("click",()=>{
+  const name = document.getElementById("loginName").value.trim();
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value.trim();
+  const role = document.getElementById("loginRole").value;
+  const error = document.getElementById("loginError");
+
+  error.textContent = "";
+
+  if(!name || !email || !password){
+    error.textContent = "Enter name, email, and password.";
+    return;
+  }
+
+  if(password.length < 6){
+    error.textContent = "Password must have at least 6 characters.";
+    return;
+  }
+
+  const users = getUsers();
+
+  if(users.some(user => user.email === email)){
+    error.textContent = "This email is already registered.";
+    return;
+  }
+
+  users.push({
+    id:makeId(),
+    name,
+    email,
+    password,
+    role,
+    createdAt:new Date().toISOString()
+  });
+
+  saveUsers(users);
+
+  error.style.color = "var(--primary)";
+  error.textContent = "Registration successful. You can now log in.";
+});
+
+document.getElementById("loginBtn").addEventListener("click",()=>{
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value.trim();
+  const selectedRole = document.getElementById("loginRole").value;
+  const remember = document.getElementById("rememberMe").checked;
+  const error = document.getElementById("loginError");
+
+  error.style.color = "var(--danger)";
+  error.textContent = "";
+
+  if(!email || !password){
+    error.textContent = "Enter email and password.";
+    return;
+  }
+
+  const users = getUsers();
+
+  const user = users.find(item =>
+    item.email === email &&
+    item.password === password &&
+    item.role === selectedRole
+  );
+
+  if(!user){
+    error.textContent =
+      "Invalid details. Register first or select the correct role.";
+    return;
+  }
+
+  currentUser = {
+    id:user.id,
+    name:user.name,
+    email:user.email,
+    role:user.role
+  };
+
+  saveCurrentUser(currentUser, remember);
+  addActivity(`${user.name} logged in.`);
+  showApp();
+});
+
+document.getElementById("showPasswordBtn").addEventListener("click",()=>{
+  const password = document.getElementById("loginPassword");
+  const button = document.getElementById("showPasswordBtn");
+
+  if(password.type === "password"){
+    password.type = "text";
+    button.textContent = "Hide";
+  }else{
+    password.type = "password";
+    button.textContent = "Show";
+  }
+});
+
+document.getElementById("logoutBtn").addEventListener("click",()=>{
+  addActivity(`${currentUser.name} logged out.`);
+  localStorage.removeItem(KEYS.user);
+  sessionStorage.removeItem(KEYS.user);
+  location.reload();
+});
+
+/* ============================
+   THEME
+============================ */
+
+function loadTheme(){
+  const dark = localStorage.getItem(KEYS.theme) === "dark";
+
+  document.documentElement.classList.toggle("dark", dark);
+  document.getElementById("themeBtn").textContent =
+    dark ? "☀️" : "🌙";
+}
+
+document.getElementById("themeBtn").addEventListener("click",()=>{
+  const dark = document.documentElement.classList.toggle("dark");
+
+  localStorage.setItem(KEYS.theme, dark ? "dark" : "light");
+  document.getElementById("themeBtn").textContent =
+    dark ? "☀️" : "🌙";
+});
+
+/* ============================
+   APPLICATION
+============================ */
+
+function showApp(){
+  document.getElementById("loginScreen").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+
+  document.getElementById("userLabel").textContent =
+    `${currentUser.name} (${roleName(currentUser.role)})`;
+
+  document.getElementById("welcomeTitle").textContent =
+    `Welcome, ${currentUser.name}`;
+
+  document.getElementById("welcomeMessage").textContent =
+    `You are logged in as ${roleName(currentUser.role)}.`;
+
+  buildNavigation();
+  loadProfile();
+  loadDashboard();
+}
+
+function buildNavigation(){
+  const nav = document.getElementById("navigation");
+  nav.innerHTML = "";
+
+  const common = [
+    ["dashboard","Dashboard"],
+    ["availableDonations","Available Food"],
+    ["analytics","Analytics"],
+    ["favorites","Favorites"],
+    ["reports","Reports"],
+    ["profile","Profile"]
+  ];
+
+  const roleItems = {
+    restaurant:[
+      ["createDonation","Post Donation"],
+      ["myDonations","My Donations"],
+      ["pickups","Pickup Tracking"]
+    ],
+    ngo:[
+      ["myDonations","My Claims"],
+      ["pickups","Pickup Tracking"]
+    ],
+    admin:[
+      ["adminPanel","Admin Panel"],
+      ["myDonations","All Donations"]
+    ]
+  };
+
+  const items = [...common,...roleItems[currentUser.role]];
+
+  items.forEach(([id,label],index)=>{
+    const button = document.createElement("button");
+
+    button.textContent = label;
+    button.dataset.target = id;
+
+    if(index === 0){
+      button.classList.add("active");
+    }
+
+    button.addEventListener("click",()=>{
+      showSection(id);
+    });
+
+    nav.appendChild(button);
+  });
+}
+
+function showSection(id){
+  document.querySelectorAll(".section").forEach(section=>{
+    section.classList.remove("active");
+  });
+
+  const section = document.getElementById(id);
+  if(section) section.classList.add("active");
+
+  document.querySelectorAll("#navigation button").forEach(button=>{
+    button.classList.toggle(
+      "active",
+      button.dataset.target === id
+    );
+  });
+
+  if(id === "dashboard") loadDashboard();
+  if(id === "availableDonations") renderAvailableDonations();
+  if(id === "myDonations") renderMyDonations();
+  if(id === "pickups") renderPickups();
+  if(id === "favorites") renderFavorites();
+  if(id === "analytics") loadAnalytics();
+  if(id === "reports") renderReports();
+  if(id === "adminPanel") renderAdmin();
+}
+
+/* ============================
+   CREATE DONATION
+============================ */
+
+document.getElementById("postDonationBtn").addEventListener("click",()=>{
+  const foodName = document.getElementById("foodName").value.trim();
+  const category = document.getElementById("foodCategory").value;
+  const quantity = Number(document.getElementById("foodQuantity").value);
+  const expiry = document.getElementById("expiryTime").value;
+  const address = document.getElementById("pickupAddress").value.trim();
+  const notes = document.getElementById("foodNotes").value.trim();
+
+  if(!foodName || !quantity || !expiry || !address){
+    showToast("Complete all required donation fields.");
+    return;
+  }
+
+  if(new Date(expiry) <= new Date()){
+    showToast("Pickup deadline must be in the future.");
+    return;
+  }
+
+  const donation = {
+    id:makeId(),
+    foodName,
+    category,
+    quantity,
+    expiry,
+    address,
+    notes,
+    donor:currentUser.name,
+    claimedBy:null,
+    status:"available",
+    createdAt:new Date().toISOString()
+  };
+
+  const donations = getDonations();
+  donations.unshift(donation);
+  saveDonations(donations);
+
+  addActivity(
+    `${currentUser.name} posted ${quantity} meals of ${foodName}.`
+  );
+
+  showToast("Donation published successfully.");
+
+  [
+    "foodName",
+    "foodQuantity",
+    "expiryTime",
+    "pickupAddress",
+    "foodNotes"
+  ].forEach(id=>{
+    document.getElementById(id).value = "";
+  });
+
+  loadDashboard();
+});
+
+/* ============================
+   DONATION FUNCTIONS
+============================ */
+
+function getFavorites(){
+  return JSON.parse(
+    localStorage.getItem(`favorites_${currentUser.id}`) || "[]"
+  );
+}
+
+function saveFavorites(data){
+  localStorage.setItem(
+    `favorites_${currentUser.id}`,
+    JSON.stringify(data)
+  );
+}
+
+function statusHTML(status){
+  const names = {
+    available:"Available",
+    claimed:"Claimed",
+    picked:"Picked Up",
+    delivered:"Delivered",
+    cancelled:"Cancelled"
+  };
+
+  return `<span class="status ${status}">
+    ${names[status] || status}
+  </span>`;
+}
+
+function donationCard(donation){
+  const favorites = getFavorites();
+  const isFavorite = favorites.includes(donation.id);
+  let actions = "";
+
+  if(currentUser.role === "ngo" &&
+     donation.status === "available"){
+    actions += `
+      <button class="btn claim-btn" data-id="${donation.id}">
+        Claim
+      </button>
+    `;
+  }
+
+  if(currentUser.role === "restaurant" &&
+     donation.donor === currentUser.name &&
+     donation.status === "claimed"){
+    actions += `
+      <button class="btn-warning status-btn"
+        data-id="${donation.id}" data-status="picked">
+        Mark Picked Up
+      </button>
+    `;
+  }
+
+  if(donation.claimedBy === currentUser.name &&
+     donation.status === "claimed"){
+    actions += `
+      <button class="btn-warning status-btn"
+        data-id="${donation.id}" data-status="picked">
+        Confirm Pickup
+      </button>
+    `;
+  }
+
+  if(donation.status === "picked" &&
+     (donation.donor === currentUser.name ||
+      donation.claimedBy === currentUser.name)){
+    actions += `
+      <button class="btn status-btn"
+        data-id="${donation.id}" data-status="delivered">
+        Mark Delivered
+      </button>
+    `;
+  }
+
+  actions += `
+    <button class="btn-secondary favorite-btn"
+      data-id="${donation.id}">
+      ${isFavorite ? "★ Remove Favorite" : "☆ Favorite"}
+    </button>
+  `;
+
+  return `
+    <div class="donation-card">
+      <h3>${escapeHTML(donation.foodName)}</h3>
+      ${statusHTML(donation.status)}
+
+      <p><b>Category:</b> ${escapeHTML(donation.category)}</p>
+      <p><b>Quantity:</b> ${donation.quantity} meals</p>
+      <p><b>Donor:</b> ${escapeHTML(donation.donor)}</p>
+      <p><b>Deadline:</b>
+        ${new Date(donation.expiry).toLocaleString()}
+      </p>
+      <p><b>Address:</b> ${escapeHTML(donation.address)}</p>
+      <p><b>Notes:</b> ${escapeHTML(donation.notes || "None")}</p>
+
+      ${
+        donation.claimedBy
+        ? `<p><b>Claimed by:</b>
+          ${escapeHTML(donation.claimedBy)}
+        </p>`
+        : ""
+      }
+
+      <div class="actions">${actions}</div>
+    </div>
+  `;
+}
+
+function renderAvailableDonations(){
+  const list = document.getElementById("donationList");
+  const query = document.getElementById("searchDonation")
+    .value.toLowerCase();
+
+  const category = document.getElementById("categoryFilter").value;
+
+  let donations = getDonations().filter(d =>
+    d.status === "available"
+  );
+
+  donations = donations.filter(d=>{
+    const textMatch =
+      d.foodName.toLowerCase().includes(query) ||
+      d.donor.toLowerCase().includes(query) ||
+      d.address.toLowerCase().includes(query);
+
+    const categoryMatch =
+      category === "all" || d.category === category;
+
+    return textMatch && categoryMatch;
+  });
+
+  if(!donations.length){
+    list.innerHTML =
+      `<div class="card empty">No donations found.</div>`;
+    return;
+  }
+
+  list.innerHTML =
+    donations.map(donationCard).join("");
+
+  attachActions();
+}
+
+function renderMyDonations(){
+  const container = document.getElementById("myDonationList");
+  let donations = getDonations();
+
+  if(currentUser.role === "restaurant"){
+    donations = donations.filter(d =>
+      d.donor === currentUser.name
+    );
+  }
+
+  if(currentUser.role === "ngo"){
+    donations = donations.filter(d =>
+      d.claimedBy === currentUser.name
+    );
+  }
+
+  if(!donations.length){
+    container.innerHTML =
+      `<p class="empty">No records found.</p>`;
+    return;
+  }
+
+  container.innerHTML =
+    `<div class="donation-list">
+      ${donations.map(donationCard).join("")}
+    </div>`;
+
+  attachActions();
+}
+
+function renderPickups(){
+  const container = document.getElementById("pickupList");
+
+  let donations = getDonations().filter(d =>
+    ["claimed","picked","delivered"].includes(d.status)
+  );
+
+  if(currentUser.role === "restaurant"){
+    donations = donations.filter(d =>
+      d.donor === currentUser.name
+    );
+  }
+
+  if(currentUser.role === "ngo"){
+    donations = donations.filter(d =>
+      d.claimedBy === currentUser.name
+    );
+  }
+
+  if(!donations.length){
+    container.innerHTML =
+      `<p class="empty">No pickup records found.</p>`;
+    return;
+  }
+
+  container.innerHTML =
+    `<div class="donation-list">
+      ${donations.map(donationCard).join("")}
+    </div>`;
+
+  attachActions();
+}
+
+function attachActions(){
+  document.querySelectorAll(".claim-btn").forEach(button=>{
+    button.addEventListener("click",()=>{
+      claimDonation(button.dataset.id);
+    });
+  });
+
+  document.querySelectorAll(".status-btn").forEach(button=>{
+    button.addEventListener("click",()=>{
+      updateStatus(
+        button.dataset.id,
+        button.dataset.status
+      );
+    });
+  });
+
+  document.querySelectorAll(".favorite-btn").forEach(button=>{
+    button.addEventListener("click",()=>{
+      toggleFavorite(button.dataset.id);
+    });
+  });
+}
+
+function claimDonation(id){
+  const donations = getDonations();
+  const donation = donations.find(d => d.id === id);
+
+  if(!donation || donation.status !== "available"){
+    showToast("Donation is no longer available.");
+    return;
+  }
+
+  donation.status = "claimed";
+  donation.claimedBy = currentUser.name;
+  donation.claimedAt = new Date().toISOString();
+
+  saveDonations(donations);
+  addActivity(
+    `${currentUser.name} claimed ${donation.foodName}.`
+  );
+
+  showToast("Donation claimed.");
+  renderAvailableDonations();
+  loadDashboard();
+}
+
+function updateStatus(id,status){
+  const donations = getDonations();
+  const donation = donations.find(d => d.id === id);
+
+  if(!donation) return;
+
+  donation.status = status;
+  donation.updatedAt = new Date().toISOString();
+
+  saveDonations(donations);
+  addActivity(
+    `${donation.foodName} changed to ${status}.`
+  );
+
+  showToast(`Donation marked as ${status}.`);
+  renderMyDonations();
+  renderPickups();
+  renderAdmin();
+  loadDashboard();
+}
+
+/* ============================
+   FAVORITES
+============================ */
+
+function toggleFavorite(id){
+  const favorites = getFavorites();
+
+  if(favorites.includes(id)){
+    saveFavorites(favorites.filter(item => item !== id));
+    showToast("Removed from favorites.");
+  }else{
+    favorites.push(id);
+    saveFavorites(favorites);
+    showToast("Added to favorites.");
+  }
+
+  renderAvailableDonations();
+  renderMyDonations();
+  renderFavorites();
+}
+
+function renderFavorites(){
+  const container =
+    document.getElementById("favoriteDonationList");
+
+  const favorites = getFavorites();
+
+  const donations = getDonations().filter(d =>
+    favorites.includes(d.id)
+  );
+
+  if(!donations.length){
+    container.innerHTML =
+      `<p class="empty">No favorite donations.</p>`;
+    return;
+  }
+
+  container.innerHTML =
+    `<div class="donation-list">
+      ${donations.map(donationCard).join("")}
+    </div>`;
+
+  attachActions();
+}
+
+/* ============================
+   DASHBOARD
+============================ */
+
+function loadDashboard(){
+  const all = getDonations();
+
+  let donations = all;
+
+  if(currentUser.role === "restaurant"){
+    donations = all.filter(d =>
+      d.donor === currentUser.name
+    );
+  }
+
+  if(currentUser.role === "ngo"){
+    donations = all.filter(d =>
+      d.claimedBy === currentUser.name
+    );
+  }
+
+  const totalMeals = donations.reduce(
+    (sum,d) => sum + Number(d.quantity),0
+  );
+
+  document.getElementById("statDonations").textContent =
+    donations.length;
+
+  document.getElementById("statMeals").textContent =
+    totalMeals;
+
+  document.getElementById("statAvailable").textContent =
+    donations.filter(d => d.status === "available").length;
+
+  document.getElementById("statCompleted").textContent =
+    donations.filter(d => d.status === "delivered").length;
+
+  const activities = getActivities().slice(0,6);
+  const box = document.getElementById("recentActivity");
+
+  box.innerHTML = activities.length
+    ? activities.map(a=>`
+      <div class="notice">
+        ${escapeHTML(a.message)}
+        <br>
+        <small>${new Date(a.time).toLocaleString()}</small>
+      </div>
+    `).join("")
+    : `<p class="empty">No activity yet.</p>`;
+
+  const notificationBox =
+    document.getElementById("notifications");
+
+  notificationBox.innerHTML = `
+    <div class="notice">
+      Provide correct quantity and expiry details for every donation.
+    </div>
+    <div class="notice">
+      Update the pickup status after food is collected.
+    </div>
+  `;
+}
+
+/* ============================
+   ANALYTICS
+============================ */
+
+function loadAnalytics(){
+  const donations = getDonations();
+  const delivered = donations.filter(d =>
+    d.status === "delivered"
+  );
+
+  const meals = delivered.reduce(
+    (sum,d) => sum + Number(d.quantity),0
+  );
+
+  const partners = new Set();
+
+  donations.forEach(d=>{
+    partners.add(d.donor);
+    if(d.claimedBy) partners.add(d.claimedBy);
+  });
+
+  document.getElementById("impactMeals").textContent =
+    meals;
+
+  document.getElementById("impactWeight").textContent =
+    `${(meals * .4).toFixed(1)} kg`;
+
+  document.getElementById("impactDeliveries").textContent =
+    delivered.length;
+
+  document.getElementById("impactPartners").textContent =
+    partners.size;
+}
+
+/* ============================
+   REPORTS
+============================ */
+
+function renderReports(){
+  const body = document.getElementById("reportTableBody");
+  const donations = getDonations();
+
+  body.innerHTML = donations.map(d=>`
+    <tr>
+      <td>${escapeHTML(d.foodName)}</td>
+      <td>${escapeHTML(d.category)}</td>
+      <td>${d.quantity}</td>
+      <td>${d.status}</td>
+      <td>${escapeHTML(d.donor)}</td>
+      <td>${escapeHTML(d.claimedBy || "-")}</td>
+    </tr>
+  `).join("");
+}
+
+document.getElementById("exportCsvBtn").addEventListener("click",()=>{
+  const donations = getDonations();
+
+  const rows = [
+    [
+      "Food",
+      "Category",
+      "Quantity",
+      "Status",
+      "Donor",
+      "Claimed By",
+      "Address",
+      "Expiry"
+    ],
+    ...donations.map(d=>[
+      d.foodName,
+      d.category,
+      d.quantity,
+      d.status,
+      d.donor,
+      d.claimedBy || "",
+      d.address,
+      d.expiry
+    ])
+  ];
+
+  const csv = rows.map(row =>
+    row.map(value =>
+      `"${String(value).replaceAll('"','""')}"`
+    ).join(",")
+  ).join("\n");
+
+  const blob = new Blob([csv],{
+    type:"text/csv;charset=utf-8;"
+  });
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = "foodbridge-report.csv";
+  link.click();
+
+  URL.revokeObjectURL(url);
+  showToast("CSV report downloaded.");
+});
+
+document.getElementById("refreshDataBtn").addEventListener("click",()=>{
+  loadDashboard();
+  renderAvailableDonations();
+  renderMyDonations();
+  renderPickups();
+  renderFavorites();
+  renderReports();
+  loadAnalytics();
+
+  showToast("Data refreshed.");
+});
+
+/* ============================
+   ADMIN
+============================ */
+
+function renderAdmin(){
+  if(currentUser.role !== "admin") return;
+
+  const body = document.getElementById("adminTableBody");
+  const donations = getDonations();
+
+  if(!donations.length){
+    body.innerHTML =
+      `<tr><td colspan="6">No donations found.</td></tr>`;
+    return;
+  }
+
+  body.innerHTML = donations.map(d=>`
+    <tr>
+      <td>${escapeHTML(d.foodName)}</td>
+      <td>${escapeHTML(d.donor)}</td>
+      <td>${d.quantity}</td>
+      <td>${statusHTML(d.status)}</td>
+      <td>${escapeHTML(d.claimedBy || "-")}</td>
+      <td>
+        <select class="admin-status" data-id="${d.id}">
+          <option value="available"
+            ${d.status==="available"?"selected":""}>
+            Available
+          </option>
+          <option value="claimed"
+            ${d.status==="claimed"?"selected":""}>
+            Claimed
+          </option>
+          <option value="picked"
+            ${d.status==="picked"?"selected":""}>
+            Picked Up
+          </option>
+          <option value="delivered"
+            ${d.status==="delivered"?"selected":""}>
+            Delivered
+          </option>
+          <option value="cancelled"
+            ${d.status==="cancelled"?"selected":""}>
+            Cancelled
+          </option>
+        </select>
+      </td>
+    </tr>
+  `).join("");
+
+  document.querySelectorAll(".admin-status").forEach(select=>{
+    select.addEventListener("change",()=>{
+      updateStatus(
+        select.dataset.id,
+        select.value
+      );
+      renderAdmin();
+    });
+  });
+}
+
+/* ============================
+   PROFILE
+============================ */
+
+function loadProfile(){
+  document.getElementById("profileName").value =
+    currentUser.name;
+
+  document.getElementById("profileEmail").value =
+    currentUser.email;
+
+  document.getElementById("profileRole").value =
+    roleName(currentUser.role);
+}
+
+document.getElementById("saveProfileBtn").addEventListener("click",()=>{
+  const newName =
+    document.getElementById("profileName").value.trim();
+
+  const newEmail =
+    document.getElementById("profileEmail").value.trim();
+
+  if(!newName || !newEmail){
+    showToast("Name and email are required.");
+    return;
+  }
+
+  currentUser.name = newName;
+  currentUser.email = newEmail;
+
+  const local = localStorage.getItem(KEYS.user);
+  const session = sessionStorage.getItem(KEYS.user);
+
+  if(local){
+    localStorage.setItem(KEYS.user,JSON.stringify(currentUser));
+  }
+
+  if(session){
+    sessionStorage.setItem(KEYS.user,JSON.stringify(currentUser));
+  }
+
+  document.getElementById("userLabel").textContent =
+    `${newName} (${roleName(currentUser.role)})`;
+
+  showToast("Profile updated.");
+});
+
+document.getElementById("clearDataBtn").addEventListener("click",()=>{
+  if(!confirm("Delete all donation and activity data?")) return;
+
+  localStorage.removeItem(KEYS.donations);
+  localStorage.removeItem(KEYS.activities);
+
+  showToast("Platform data cleared.");
+  loadDashboard();
+});
+
+/* ============================
+   SEARCH FILTERS
+============================ */
+
+document.getElementById("searchDonation")
+  .addEventListener("input",renderAvailableDonations);
+
+document.getElementById("categoryFilter")
+  .addEventListener("change",renderAvailableDonations);
+
+/* ============================
+   DEMO DATA
+============================ */
+
+function createDemoData(){
+  if(getDonations().length) return;
+
+  const deadline = new Date(Date.now()+86400000)
+    .toISOString()
+    .slice(0,16);
+
+  saveDonations([
+    {
+      id:makeId(),
+      foodName:"Vegetable rice meals",
+      category:"Cooked meals",
+      quantity:40,
+      expiry:deadline,
+      address:"MG Road, Bengaluru",
+      notes:"Packed meals containing rice and vegetables.",
+      donor:"Green Leaf Restaurant",
+      claimedBy:null,
+      status:"available",
+      createdAt:new Date().toISOString()
+    },
+    {
+      id:makeId(),
+      foodName:"Bread and bakery items",
+      category:"Bakery items",
+      quantity:25,
+      expiry:deadline,
+      address:"Market Street, Bengaluru",
+      notes:"Same-day distribution recommended.",
+      donor:"Daily Bake Cafe",
+      claimedBy:null,
+      status:"available",
+      createdAt:new Date().toISOString()
+    }
+  ]);
+}
+
+/* ============================
+   START APPLICATION
+============================ */
+
+loadTheme();
+createDemoData();
+
+const stored = getStoredUser();
+
+if(stored){
+  currentUser = JSON.parse(stored);
+  showApp();
+}
+</script>
+
+</body>
+</html>
